@@ -1,0 +1,114 @@
+﻿2
+HI 20
+tu<?php
+
+$lines = array( 
+3 => array(" 1", "ABC2", "DEF"),
+2 => array("GHI4", "JKL5", "MNO6"),
+1 => array("PQRS7", "TUV8", "WXYZ9"),
+0 => array("", "0", "-"),
+);
+/*
+
+|
+|
+Y
+|
+|
+----X----
+
+*/
+
+
+function getPos($letter){
+	global $lines;
+	$letter = strtoupper($letter);
+	$coords = false;
+	foreach($lines as $y => $keys){
+		if($coords !== false){
+			break;
+		}
+		foreach($keys as $x => $pad){
+			$pos = strpos($pad, $letter);
+			if($pos !== false){
+				$coords = array($x, $y, $pos);
+				break;
+			}
+		}
+	}
+	return $coords;
+}
+
+function moveTime($from, $to){
+	$time = 0;
+	$diffX = abs($from[0] - $to[0]);
+	$diffY = abs($from[1] - $to[1]);
+	while($diffX > 0 or $diffY > 0){
+		if($diffX == $diffY){
+			//Diagonal
+			--$diffX;
+			--$diffY;
+			$time += 350;
+		}
+		if($diffX < $diffY){
+			//Vertical
+			--$diffY;
+			$time += 300;
+		}
+		if($diffX > $diffY){
+			//Horizontal
+			--$diffX;
+			$time += 200;
+		}
+	}
+	return $time;
+}
+
+function calculateTime($target){
+	global $pointer, $upper;
+	$time = 0;
+	if($upper == true and strtoupper($target) != $target){
+		//Lowercase
+		$pos = array(2, 0, 0); //Fast exec (-)
+		$time += moveTime($pointer, $pos);
+		$time += 100;
+		$pointer = $pos;
+	}elseif($upper == false and strtolower($target) != $target){
+		//Uppercase
+		$pos = array(2, 0, 0); //Fast exec (-)
+		$time += moveTime($pointer, $pos);
+		$time += 100;
+		$pointer = $pos;
+	}
+	$pos = getPos($target);
+	if($pos[0] == $pointer[0] and $pos[1] == $pointer[1]){
+		//Same key
+		$time += 500;
+	}else{
+		$time += moveTime($pointer, $pos);
+	}
+	$time += 100 + 100 * $pos[2];
+	$pointer = $pos;
+	return $time;
+}
+
+$pointer = array(1, 0, 0);//Fast exec (0)
+$upper = false;
+$time = 0;
+
+$count = intval(fgets(STDIN));
+
+for($t = 0; $t < $count; ++$i){
+
+	$str = fgets(STDIN);
+	$len = strlen($str);
+
+	for($i = 0; $i < $len; ++$i){
+		$time += calculateTime($str{$i});
+	}
+
+	echo $time,PHP_EOL;
+
+	}
+
+}

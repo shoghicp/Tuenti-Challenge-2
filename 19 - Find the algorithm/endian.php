@@ -1,0 +1,129 @@
+<?php
+
+function read_int($str, $signed = true){
+	list(,$unpacked) = unpack("I", substr(strrev($str), 0, 4));
+	if($unpacked >= pow(2, 31)) $unpacked -= pow(2, 32); // Convert unsigned int to signed int
+	return $unpacked;
+}
+
+function bigint2bit($result, $bigendian = false){
+	//Big number division
+	$bit = "";
+	while($result != "0" and $result != "1"){
+		$int = str_split($result, 1);
+		$len = count($int);
+		$tmp = "";
+		$tmp2 = "";
+		$result = "";
+		for($i = 0; $i < $len; ++$i){
+			$int[$i] = intval($tmp2 . $int[$i]);
+			$result .= (string) floor($int[$i]/2);
+			$tmp2 = (string) $int[$i] % 2;
+		}
+		$bit .= $tmp2;
+		$result = (string) intval($result);
+	}
+	$bit .= $result;
+	return $bigendian == true ? strrev($bit):$bit;
+}
+
+function bigendian_int($str){
+	$bits = array_map("intval",str_split($str,1));
+	$v = 0;
+	$x = 0;
+	for($i = strlen($str) - 1; $i >= 0; --$i){
+		$v += pow(2, $i) * $bits[$x];
+		++$x;
+	}
+	return $v;
+
+}
+
+function binToHex($str){
+	$ret = "";
+	foreach(str_split($str, 8) as $hex){
+		$ret .= str_pad(dechex(bindec($hex)), 2, "0", STR_PAD_LEFT);
+	}
+	return $ret;
+}
+
+function hexToBin($str){
+	$ret = "";
+	foreach(str_split($str, 2) as $hex){
+		$ret .= str_pad(decbin(hexdec($hex)), 8, "0", STR_PAD_LEFT);
+	}
+	return $ret;
+}
+
+function hexToStr($str){
+	$ret = "";
+	foreach(str_split($str, 2) as $hex){
+		$ret .= chr(hexdec($hex));
+	}
+	return $ret;
+}
+
+//$in = "NTRlODdmYTU1NGU4N2ZhMDU0ZTg3ZmE2NTRlODdmYjI1NGU4N2ZjNTU0ZTg3ZmM3NTRlODdmYzY1NGU4N2ZiYTU0ZTg3ZmM0NTRlODdmZDY1NGU4N2ZkZTU0ZTg3ZmU0NTRlODdmZTk1NGU4N2ZmMDU0ZTg3ZmYxNTRlODdmZGU1NGU4N2ZkZTU0ZTg3ZmRkNTRlODdmZDU1NGU4N2ZlMDU0ZTg3ZmU3NTRlODdmZWE1NGU4N2ZkNzU0ZTg3ZmVhNTRlODdmZGY1NGU4N2ZkOTU0ZTg3ZmRmNTRlODdmZDk1NGU4N2ZkMDU0ZTg3ZmRiNTRlODdmZTk1NGU4N2ZlNzU0ZTg3ZmUzNTRlODdmZWQ1NGU4N2ZmYzU0ZTg4MDA0NTRlODgwMGI1NGU4ODAwNzU0ZTg4MDE1NTRlODgwMGI1NGU4ODAxZjU0ZTg4MDFjNTRlODgwMmE1NGU4ODAyNjU0ZTg4MDMxNTRlODgwNDI1NGU4ODAzYzU0ZTg4MDJmNTRlODgwMmE1NGU4ODAyODU0ZTg4MDM2NTRlODgwNDE1NGU4ODAzYjU0ZTg4MDMxNTRlODgwMjI1NGU4ODAwZTU0ZTg4MDE2NTRlODgwMjE1NGU4ODAyYzU0ZTg4MDJjNTRlODgwMWE1NGU4ODAwYzU0ZTg4MDE0NTRlODgwMjM1NGU4ODAyMjU0ZTg4MDJkNTRlODgwMzE1NGU4ODAxZDU0ZTg4MDFmNTRlODgwMTI1NGU4ODAwYjU0ZTg4MDFiNTRlODgwMmU1NGU4ODAzMTU0ZTg4MDI5NTRlODgwM2Q1NGU4ODAzNTU0ZTg4MDQxNTRlODgwNGY1NGU4ODA0MjU0ZTg4MDM4NTRlODgwMmE1NGU4ODAzNjU0ZTg4MDJjNTRlODgwNDA1NGU4ODAzYTU0ZTg4MDI5NTRlODgwMjk1NGU4ODAzNTU0ZTg4MDQ4NTRlODgwNTc1NGU4ODA2MjU0ZTg4MDc1NTRlODgwNzc1NGU4ODA4YTU0ZTg4MDg0NTRlODgwOGQ1NGU4ODA4OTU0ZTg4MDk3NTRlODgwODU1NGU4ODA5NzU0ZTg4MDg4NTRlODgwODI1NGU4ODA3NzU0ZTg4MDczNTRlODgwN2I1NGU4ODA2ZDU0ZTg4MDZkNTRlODgwN2Y1NGU4ODA4OTU0ZTg4MDkwNTRlODgwOGQ1NGU4ODA5ZDU0ZTg4MGE4NTRlODgwYTc1NGU4ODBiYTU0ZTg4MGMwNTRlODgwYzg1NGU4ODBkYjU0ZTg4MGQ4NTRlODgwZGM1NGU4ODBlMzU0ZTg4MGQzNTRlODgwYzA1NGU4ODBjNzU0ZTg4MGRiNTRlODgwZTI1NGU4ODBkNjU0ZTg4MGQwNTRlODgwY2I1NGU4ODBkNjU0ZTg4MGUyNTRlODgwZGM1NGU4ODBlYTU0ZTg4MGZjNTRlODgwZWQ1NGU4ODBlZjU0ZTg4MGY1NTRlODgwZWI1NGU4ODBmZjU0ZTg4MGYzNTRlODgwZWM1NGU4ODBmZDU0ZTg4MTBkNTRlODgxMDc1NGU4ODBmNjU0ZTg4MGZmNTRlODgxMDY1NGU4ODEwMzU0ZTg4MGYwNTRlODgwZWQ1NGU4ODBmNzU0ZTg4MTA2NTRlODgwZmQ1NGU4ODEwOTU0ZTg4MTE4NTRlODgxMWE1NGU4ODEwYjU0ZTg4MTA0NTRlODgwZjQ1NGU4ODBmYTU0ZTg4MTBkNTRlODgxMWY1NGU4ODEyODU0ZTg4MTI5NTRlODgxMmE1NGU4ODEyOTU0ZTg4MTM1NTRlODgxMjY1NGU4ODEyOTU0ZTg4MTFjNTRlODgxMGY1NGU4ODEyMzU0ZTg4MTM1NTRlODgxNDU1NGU4ODEzMjU0ZTg4MTM5NTRlODgxM2Q1NGU4ODE0YzU0ZTg4MTVhNTRlODgxNjg1NGU4ODE2YzU0ZTg4MTYzNTRlODgxNTM1NGU4ODE0ZjU0ZTg4MTQ2NTRlODgxNTE1NGU4ODE1YTU0ZTg4MTRhNTRlODgxNTA1NGU4ODE1ZTU0ZTg4MTYzNTRlODgxNjk1NGU4ODE1YzU0ZTg4MTVlNTRlODgxNTA1NGU4ODE1OTU0ZTg4MTYyNTRlODgxNjQ1NGU4ODE2MTU0ZTg4MTU3NTRlODgxNjA1NGU4ODE1NDU0ZTg4MTVjNTRlODgxNjk1NGU4ODE1NTU0ZTg4MTRhNTRlODgxNWI1NGU4ODE2ZjU0ZTg4MTczNTRlODgxNzk1NGU4ODE3ZDU0ZTg4MTc1NTRlODgxNzc1NGU4ODE3NzU0ZTg4MTZhNTRlODgxNmM1NGU4ODE4MDU0ZTg4MThmNTRlODgxODA1NGU4ODE4NjU0ZTg4MTg5NTRlODgxNzk1NGU4ODE4NzU0ZTg4MTg1NTRlODgxN2Q1NGU4ODE4YjU0ZTg4MTg3NTRlODgxNzU1NGU4ODE2YjU0ZTg4MTZhNTRlODgxNTg1NGU4ODE1ODU0ZTg4MTY4";
+$in = "YmM3OWYxMDNiYzc5ZjEwMWJjNzlmMGZjYmM3OWYwZmJiYzc5ZjBlYWJjNzlmMGY3YmM3OWYxMGFiYzc5ZjEwNWJjNzlmMTAxYmM3OWYxMTBiYzc5ZjEyMGJjNzlmMTMwYmM3OWYxM2ViYzc5ZjEzY2JjNzlmMTI5YmM3OWYxMTliYzc5ZjExMWJjNzlmMTI0YmM3OWYxMTRiYzc5ZjExY2JjNzlmMTFkYmM3OWYxMjRiYzc5ZjEyMWJjNzlmMTFlYmM3OWYxMWJiYzc5ZjExNGJjNzlmMTFhYmM3OWYxMDliYzc5ZjExM2JjNzlmMTE2YmM3OWYxMDJiYzc5ZjEwOGJjNzlmMTE1YmM3OWYxMDViYzc5ZjBmYWJjNzlmMTA5YmM3OWYxMTZiYzc5ZjEyMWJjNzlmMTMwYmM3OWYxNDJiYzc5ZjEzY2JjNzlmMTNhYmM3OWYxNDZiYzc5ZjEzMmJjNzlmMTI2YmM3OWYxMjViYzc5ZjEyMmJjNzlmMTEwYmM3OWYxMWJiYzc5ZjExNGJjNzlmMTBkYmM3OWYxMTFiYzc5ZjEwZWJjNzlmMTEwYmM3OWYwZmViYzc5ZjBlY2JjNzlmMGQ5YmM3OWYwZDRiYzc5ZjBlMWJjNzlmMGRiYmM3OWYwZTRiYzc5ZjBlYmJjNzlmMGRlYmM3OWYwZTRiYzc5ZjBlN2JjNzlmMGYyYmM3OWYwZGViYzc5ZjBjYmJjNzlmMGNkYmM3OWYwY2NiYzc5ZjBiZWJjNzlmMGM1YmM3OWYwYzViYzc5ZjBjNWJjNzlmMGI1YmM3OWYwYjhiYzc5ZjBhZmJjNzlmMGJlYmM3OWYwYmRiYzc5ZjBjNWJjNzlmMGM1YmM3OWYwZDliYzc5ZjBkMGJjNzlmMGRkYmM3OWYwZGFiYzc5ZjBkM2JjNzlmMGUxYmM3OWYwZTBiYzc5ZjBlM2JjNzlmMGUzYmM3OWYwZDJiYzc5ZjBkYmJjNzlmMGVlYmM3OWYwZGNiYzc5ZjBkYmJjNzlmMGNkYmM3OWYwZDNiYzc5ZjBlN2JjNzlmMGY4YmM3OWYwZmRiYzc5ZjBmZmJjNzlmMGY1YmM3OWYxMDNiYzc5ZjBmOWJjNzlmMGYzYmM3OWYwZjZiYzc5ZjBlNWJjNzlmMGU2YmM3OWYwZjJiYzc5ZjBlZWJjNzlmMGVlYmM3OWYwZjNiYzc5ZjBmMmJjNzlmMTAxYmM3OWYxMDdiYzc5ZjBmZmJjNzlmMGYzYmM3OWYwZjViYzc5ZjBlN2JjNzlmMGY4YmM3OWYxMGFiYzc5ZjExN2JjNzlmMTIxYmM3OWYxMzFiYzc5ZjEyYmJjNzlmMTNmYmM3OWYxNGFiYzc5ZjE0ZWJjNzlmMTVjYmM3OWYxNTZiYzc5ZjE0NWJjNzlmMTRiYmM3OWYxNDRiYzc5ZjE1OGJjNzlmMTQ2YmM3OWYxNGViYzc5ZjE0MmJjNzlmMTNkYmM3OWYxMzBiYzc5ZjEyMWJjNzlmMTFkYmM3OWYxMTNiYzc5ZjEwNGJjNzlmMTAzYmM3OWYxMTJiYzc5ZjEwOWJjNzlmMTBmYmM3OWYwZmNiYzc5ZjBlZmJjNzlmMGYwYmM3OWYwZjJiYzc5ZjBlZmJjNzlmMGVjYmM3OWYwZWRiYzc5ZjBlMGJjNzlmMGUzYmM3OWYwZjViYzc5ZjBmZWJjNzlmMGZlYmM3OWYxMGRiYzc5ZjBmZWJjNzlmMGYxYmM3OWYwZjZiYzc5ZjBmNmJjNzlmMTAxYmM3OWYxMDBiYzc5ZjBmM2JjNzlmMGY0YmM3OWYxMDJiYzc5ZjBmN2JjNzlmMTA4YmM3OWYxMDhiYzc5ZjExMWJjNzlmMGZmYmM3OWYwZmFiYzc5ZjBlZGJjNzlmMGYwYmM3OWYxMDRiYzc5ZjBmY2JjNzlmMTBkYmM3OWYwZmJiYzc5ZjEwNWJjNzlmMGY2YmM3OWYwZjRiYzc5ZjEwMWJjNzlmMTAyYmM3OWYxMDdiYzc5ZjExOWJjNzlmMTJkYmM3OWYxMWRiYzc5ZjExM2JjNzlmMTBkYmM3OWYxMGZiYzc5ZjBmZGJjNzlmMGVmYmM3OWYwZTFiYzc5ZjBkYWJjNzlmMGNiYmM3OWYwY2NiYzc5ZjBkNGJjNzlmMGM0YmM3OWYwYjdiYzc5ZjBiNWJjNzlmMGM4YmM3OWYwYzNiYzc5ZjBkNGJjNzlmMGMxYmM3OWYwYjJiYzc5ZjBiMWJjNzlmMGE1YmM3OWYwYjBiYzc5ZjBhNWJjNzlmMGFmYmM3OWYwOWRiYzc5ZjBhNGJjNzlmMDkyYmM3OWYwOWViYzc5ZjBhM2JjNzlmMDhmYmM3OWYwODZiYzc5ZjA3YWJjNzlmMDgzYmM3OWYwOTZiYzc5ZjBhNmJjNzlmMGExYmM3OWYwYTJiYzc5ZjA5NWJjNzlmMDllYmM3OWYwOGZiYzc5ZjA4ZmJjNzlmMDhkYmM3OWYwODliYzc5ZjA3Y2JjNzlmMDc1";
+$out = "ZGUzY2Y4ODFiY2RiZmJjNzlmMGVhMzc3OGYzZTIxNGRiODdlZjFlN2M0ODM3OGYzZTI2MDczZGJjNzlmMTI5NDE4ZGUzY2Y4OTIyMDQwMjNiYWViYWM4ZGJjNzlmMTA5MjgzZGUzY2Y4ODEwYzZhMGE5ZTY5NjdlZjFlN2M1MDlhNzhjZGUzY2Y4OTkyOGZiYmJjNzlmMTEwMmQ5NjQ0NzQyZGUzY2Y4N2Y2ZjFlN2MzYjM3OGYzZTFiMmQ5YWQxMjNhNjMwNjVlZjFlN2MzN2I3OGYzZTE5NjEzZTkwZTAwMDgwNmI5ZWY5MDA2ZjFlN2MzNjU3MzVkNjRlN2MzMDM3OGYzZTFhNDRlZjFlN2MzYmI3OGYzZTFiOGZhNDM2ZjFlN2MzOWY3OGYzZTFmMDI4NGIxY2IzNDFlZjFlN2MzOTQxMzFjMDA1N2NmMTk4NTAyNGI3OGYzZTFmMWJjNzlmMTBhMzRhZGUzY2Y4OThiNWJjNzlmMTNmMmM0MzlhZGUzY2Y4YTI4Y2NlZjFlN2M1NjM3OGYzZTI4YzQyOGRhNjhiOGIyMmY5ZWI4ZGJjNzlmMGZjNGMxMDlkNzQxNGMzZGUzY2Y4N2E5MjAxZThhNjI4MDViZTk4MjcyYmJjNzlmMTA4MDA5ZGUzY2Y4N2ZiNjk4N2JjNzlmMTA0NjM3OGYzZTIxYmJjNzlmMGZiMjkxNzhkMDQ1ZGUzY2Y4OGNlZjFlN2M0YjUwNTlhMGI3OGYzZTFmYTkyNGNhMjA5MDgyNmY2ZjFlN2MzMjFiZGUzY2Y4NmE2ZjFlN2MzMDUxN2Q0MmQ1MmI3OGYzZTEzYTNlZjFlN2MyNDhjMTc3OGYzZTExZWJhODRlZjFlN2MyNWI3OGYzZTE0Y2Q4Mjk5Mjg4MGYzODliMg";
+
+
+$in = hexToBin(base64_decode($in));
+$out = hexToBin(base64_decode($out));
+
+$check = array();
+$last = array();
+foreach(str_split($in,32) as $word){
+
+	for($i = 0; $i < 32; ++$i){
+		if(!isset($last[$i])){
+			$check[$i] = true;
+			$last[$i] = $word{$i};
+		}elseif($check[$i] == true){
+			if($last[$i] != $word{$i}){
+				$check[$i] = false;
+			}
+		}
+	}
+}
+
+$rep = "";
+foreach($check as $i => $c){
+	if($c == true){
+		$rep .= $last[$i];
+	}else{
+		break;
+	}
+}
+
+echo $rep,"|",count($check) - strlen($rep),PHP_EOL;
+
+
+$data = array();
+foreach(str_split($in,32) as $chr){
+	if(!isset($int)){
+		
+	}
+	//echo bigendian_int($chr) - $int,PHP_EOL;
+	$int = bigendian_int($chr);
+	echo bigendian_int($chr),PHP_EOL;
+}
+
+/*foreach($data as $int){
+	echo str_pad(dechex($int),2,"0",STR_PAD_LEFT);
+}*/
+
+//file_put_contents("inbits.txt", chunk_split($in,32,PHP_EOL));
+//file_put_contents("indec.txt", chunk_split($in , 8, PHP_EOL));
+//file_put_contents("out.txt",chunk_split($out,8,PHP_EOL));
+//file_put_contents("indec.txt", $in);
+file_put_contents("outraw.txt", binToHex($out));
+
+echo (strlen($out)/strlen($in)) * 100,PHP_EOL;
+echo strlen($in)/strlen($out);
+
+/*$in = str_split(implode(array_map("chr",array_map("hexdec",  str_split(base64_decode($in), 2)))),4);
+
+foreach($in as $int){
+	echo read_int($int),PHP_EOL;
+}*/

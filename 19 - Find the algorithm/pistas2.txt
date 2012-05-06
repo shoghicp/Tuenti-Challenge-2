@@ -1,0 +1,30 @@
+es un algoritmo de compresion sin perdida
+sin diccionario
+
+y otra cosa
+los bloques de 32 bits no son imagenes
+ni valroes rgb
+son enteros
+
+patrones
+
+hay muchos patrones 
+lo q a mi mas me llamo la atencion
+es q hay demasiados, mas q en la entrada
+eso debe darte una pista de donde buscar
+
+
+Challenge 20: May the Force be with you
+que pasé el 19
+xDD
+
+has dicho q has visto patrones, no?
+y q hay desplazamiento de bits, no?
+
+busca los patrones a nivel de bit
+busca patrones de la entrada
+en la salida
+a nivel de bit
+todo cuadra así 
+
+piensa a nivel de flujo de bits
