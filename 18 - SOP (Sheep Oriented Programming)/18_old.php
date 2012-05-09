@@ -14,6 +14,6 @@ foreach($lines as $line){
 		continue;
 	}
 	$x = intval($line);
-	echo "Case #",$c,": ",(0.5*pow($x,2) + 0.5*$x + 1),PHP_EOL; //formula to calc max cuts
+	echo "Case #",$c,": ",(0.5*pow($x,2) + 0.5*$x + 1),PHP_EOL;
 	++$c;
 }

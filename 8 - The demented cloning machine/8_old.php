@@ -1,9 +1,6 @@
 <?php
 
-//php doesn't have a non-recursive replace function. so I had to write a custom one
-
 /*
-//old function (replaced with a best one!)
 function non_recursive_replace($search, $replace, $str){
 	$findings = array();
 	$replaces = array();
@@ -29,8 +26,7 @@ function non_recursive_replace($search, $replace, $str){
 	return $result;
 }*/
 
-//here are the function. but I made some improvements specific for THIS challenge, so this isn't used
-/*
+
 function non_recursive_replace($search, $replace, $str){
 	$len = strlen($str);
 	$result = "";
@@ -54,15 +50,13 @@ function non_recursive_replace($search, $replace, $str){
 	unset($str);
 	return $result;
 }
-*/
 
-//the special function. I forgot to remove the $replace arg
 function special_non_recursive_replace($search, $replace, $str, $len = -1){
 	if(!isset($str{$len-1})){
 		$len = strlen($str);
 	}
 	$result = "";
-	for($l = 0; $l < $len; ++$l){ //char after char... this works best for this case rather than preg_grep
+	for($l = 0; $l < $len; ++$l){
 		$char = $str{$l};
 		if(!isset($search[$char])){
 			$result .= $char;
@@ -79,7 +73,7 @@ while(!feof(STDIN)){
 	$lines[] = str_replace(array("\r", "\n") , "", fgets(STDIN));
 }
 
-ini_set("memory_limit", "2048M"); //just in case. It only takes about 100MB of memory
+ini_set("memory_limit", "2048M");
 
 $outfile = dirname(__FILE__)."/out.tmp";
 
@@ -91,7 +85,7 @@ $search = array();
 $special = array();
 $replace = array();
 
-for($l = 0; $l < $lcnt; ++$l){ //get all transformations first
+for($l = 0; $l < $lcnt; ++$l){
 	unset($transformations);
 	$transformations = array();
 	$tmp = array_map("trim", explode(",",$lines[$l]));
@@ -116,22 +110,21 @@ for($l = 0; $l < $lcnt; ++$l){ //get all transformations first
 	}
 }
 
-$fr = fopen($outfile."0", "r"); //open soruce file
+$fr = fopen($outfile."0", "r");
 
-$len = 1024 * 1024 * 16; //lenght to read (memory issues fixed with this. PHP does not handle well large amounts of data)
+$len = 1024 * 1024 * 16;
 for($l = 0; $l < $lcnt; ++$l){
-	$fw = fopen($outfile."".($l + 1)."", "w+");	 //open target file
+	$fw = fopen($outfile."".($l + 1)."", "w+");	
 	while(!feof($fr)){
-		//direct write of replacement
 		@fwrite($fw, special_non_recursive_replace($special[$l], $replace[$l], @fread($fr, $len), $len));
 	}
-	fclose($fr); //close read
-	@unlink($outfile."$l"); //save space
-	$fr = $fw; //reuse file pointer
-	rewind($fr); //rewind, like in a casette or VHS xD
+	fclose($fr);
+	@unlink($outfile."$l");
+	$fr = $fw;
+	rewind($fr);
 }
 
 fclose($fr);
-echo md5_file($outfile."$l"),PHP_EOL; //md5 of a file... I couldn't use here md5() because file size
-@unlink($outfile."$l"); //free!!
+echo md5_file($outfile."$l"),PHP_EOL;
+@unlink($outfile."$l");
 ?>

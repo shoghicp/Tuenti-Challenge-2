@@ -1,3 +1,0 @@
-2
-plasm 2
-chair 12

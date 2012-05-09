@@ -1,6 +1,5 @@
 <?php
 
-//calculate the hamming code (universal) of a given bit stream
 function hamming_code($str){
 	$d = str_split($str, 1);
 	$bits = array();
@@ -28,7 +27,6 @@ function hamming_code($str){
 	
 }
 
-//check, repair and return the hamming code (universal) of a given bit stream
 function hamming_code_check($str){
 	$bits = str_split($str, 1);
 	$cnt = count($bits);
@@ -50,7 +48,7 @@ function hamming_code_check($str){
 
 	$ecnt = count($error);
 	if($ecnt > 0){
-		@$bits[array_sum($error)] ^= 1;
+		$bits[array_sum($error)] ^= 1;
 	}
 	$ret = array();
 	for($i = 1; $i <= $cnt; ++$i){
@@ -73,26 +71,25 @@ foreach($lines as $line){
 		continue;
 	}
 	$ret = ""; 
-	if(strlen($line) % 7 != 0){ //if not divisible by 7, drop it
+	if(strlen($line) % 7 != 0){
 		echo "Error!",PHP_EOL;
 		continue;
 	}
-	foreach(str_split($line,7) as $l){ //split it in chunks of 7 bits
-		$ret .= $val = hamming_code_check($l); //get value
+	foreach(str_split($line,7) as $l){
+		$ret .= $val = hamming_code_check($l);
 	}
 	$bytes = strlen($ret) / 8;
 	$ret2 = "";
 	for($i = 0; $i < $bytes; ++$i){
-		$chr = bindec(substr($ret, $i * 8, 8)); //parse it to decimal
-		if($chr < 32 or $chr > 126){ //non-printable chars check
+		$chr = bindec(substr($ret, $i * 8, 8));
+		if($chr < 32 or $chr > 126){
 			echo "Error!",PHP_EOL;
 			break;
 		}
-		$ret2 .= chr($chr); //ascii char
+		$ret2 .= chr($chr);
 	}
-	if($chr < 32 or $chr > 126){//non-printable chars check
-		//in the code I sent this was a break; . that caused the submit to fail
-		continue;
+	if($chr < 32 or $chr > 126){
+		break;
 	}
 	echo $ret2,PHP_EOL;
 }

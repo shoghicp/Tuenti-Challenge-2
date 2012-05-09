@@ -1,8 +1,0 @@
-dance => dar vuelta
-$ => resta
-@ => suma
-# => multiplica
-& => divide
-mirror => * -1 el resultado
-breadandfish => ultimo numero
-conquer => modulo (%)

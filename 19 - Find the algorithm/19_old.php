@@ -1,7 +1,5 @@
 <?php
 
-
-//my custom function
 function bigint2bit($result, $bigendian = true){
 	//Big number division
 	$bit = "";
@@ -22,7 +20,7 @@ function bigint2bit($result, $bigendian = true){
 	$bit .= $result;
 	return $bigendian == false ? strrev($bit):$bit;
 }
-//also custom
+
 function hexToBin($str){
 	$ret = "";
 	foreach(str_split($str, 2) as $hex){
@@ -31,7 +29,6 @@ function hexToBin($str){
 	return $ret;
 }
 
-//yes, own function
 function binToHex($str){
 	$ret = "";
 	foreach(str_split($str, 8) as $hex){
@@ -40,7 +37,6 @@ function binToHex($str){
 	return $ret;
 }
 
-//I'm boring of doing this... Also own function
 function bigendian_int($str){
 	$bits = array_map("intval",str_split($str,1));
 	$v = 0;
@@ -54,7 +50,7 @@ function bigendian_int($str){
 }
 
 
-//The SUPER-HARD challenge: base64
+
 $out = hexToBin(base64_decode(fgets(STDIN)));
 $len = strlen($out);
 
@@ -62,18 +58,19 @@ $len = strlen($out);
 
 $res = "";
 $int = 0;
-foreach(str_split($out,32) as $chr){ //split by 32 bits
+foreach(str_split($out,32) as $chr){
 	$cur = bigendian_int($chr);
-	if(($cur - $int) > 15 or ($cur - $int) < -16){ //if it's out of the limits of an 5-bit number
-		$res .= "1".$chr; //new "bignumber"
-	}else{		
+	if(($cur - $int) > 15 or ($cur - $int) < -16){
+		$res .= "1".$chr;
+	}else{
+		
 		if(($cur - $int) < 0){
-			$tmp = str_pad(decbin(abs($cur - $int) - 1), 5, "0", STR_PAD_LEFT); //if negative, calculate correct values
+			$tmp = str_pad(decbin(abs($cur - $int) - 1), 5, "0", STR_PAD_LEFT);
 			for($i = 0; $i < 5; ++$i){
 				$tmp{$i} = $tmp{$i} == "0" ? "1":"0";
 			}
 		}else{
-			$tmp = str_pad(decbin(abs($cur - $int)), 5, "0", STR_PAD_LEFT); //positive
+			$tmp = str_pad(decbin(abs($cur - $int)), 5, "0", STR_PAD_LEFT);
 		}
 		
 		$res .= "0".$tmp;
@@ -82,10 +79,9 @@ foreach(str_split($out,32) as $chr){ //split by 32 bits
 }
 
 $len = strlen($res);
-if(($len % 8) > 0){ //pad with 0's
+if(($len % 8) > 0){
 $res .= str_repeat("0",8 - ( $len % 8));
 
 }
 
-//encode and replace "="
 echo str_replace("=", "", base64_encode(binToHex($res))),PHP_EOL;

@@ -5,44 +5,51 @@ while(!feof(STDIN)){
 	$lines[] = explode(" ", trim(str_replace(array("\r", "\n") , "", fgets(STDIN))));
 }
 
+$instructions = array(
+	"mirror" => 'return -$token[0];',
+	"breadandfish" => 'return $token[0] * ($token[2] == "#" ? $token[0]:$token[2]);',
+
+
+);
+
 foreach($lines as $tokens){
 	$numbers = array();
 	foreach($tokens as $tok){
 		$c = count($numbers) - 1;
 		switch($tok){
-			case "dance": //interchange numbers
+			case "dance":
 				$tmp = $numbers[$c];
 				$numbers[$c] = $numbers[$c - 1];
 				$numbers[$c - 1] = $tmp;
 				break;
-			case "mirror": // * -1
+			case "mirror":
 				$numbers[$c] = bcmul(array_pop($numbers), "-1");
 				break;
-			case "conquer": //module
+			case "conquer":
 				$numbers[$c - 1] = $numbers[$c - 1] % array_pop($numbers);
 				break;
-			case "breadandfish": //same number
+			case "breadandfish":
 				$numbers[$c + 1] = $numbers[$c];
 				break;
-			case "fire": //delete!
+			case "fire":
 				array_pop($numbers);
 				break;
-			case '$': //substract
+			case '$':
 				$numbers[$c - 1] = bcsub($numbers[$c - 1], array_pop($numbers));
 				break;
-			case '@': //add
+			case '@':
 				$numbers[$c - 1] = bcadd($numbers[$c - 1], array_pop($numbers));
 				break;
-			case '#': //multiplicate
+			case '#':
 				$numbers[$c - 1] = bcmul($numbers[$c - 1], array_pop($numbers));
 				break;
-			case '&': //divide
+			case '&':
 				$numbers[$c - 1] = bcdiv($numbers[$c - 1], array_pop($numbers));
 				break;
-			case '.': //end of line!
+			case '.':
 				echo $numbers[$c],PHP_EOL;
 				break;
-			default: //add numbers
+			default:
 				$numbers[] = $tok;
 				break;
 		}

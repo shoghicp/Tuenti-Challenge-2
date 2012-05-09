@@ -19,8 +19,6 @@ function string_getpermutations($prefix, $characters, &$permutations)
 }
 //----- END -----
 
-
-//Punctuation per word
 function getPoints($word){
 	$len = strlen($word);
 	$points = 0;
@@ -65,15 +63,13 @@ function getPoints($word){
 	return $points;
 }
 
-
-//precalculate the most valuable word with letters ordered
 function precalculate(){
 	$wordlist = explode("\n", file_get_contents(dirname(__FILE__)."/descrambler_wordlist.txt"));
 	$words = array();
 	foreach($wordlist as $word){
 		$word = trim($word);
 		$w = str_split($word, 1);
-		natcasesort($w); //sort by letter order
+		natcasesort($w);
 		$w = implode($w);
 		$p = getPoints($w);
 		if(!isset($words[$w])){
@@ -100,22 +96,19 @@ foreach($lines as $line){
 	$len = strlen($line[1]);
 	$wlen = strlen($line[0]);
 	$max = array("", 0);	
-	for($y = 0; $y <= $len; ++$y){
+	for($y = 0; $y < $len; ++$y){
 		for($x = 0; $x < $wlen; ++$x){
 			for($i = 0; $i < $len; ++$i){
 				$v = str_split(substr($line[0], $x) . $line[1]{$i}, 1);			
 				natcasesort($v);
 				$v = implode($v);
-				
 				if(!isset($words[$v])){
 					continue;
 				}elseif($words[$v][1] > $max[1] or ($words[$v][1] == $max[1] and strcmp($words[$v][0], $max[0]) < 0)){
-					//if word exists and has best punctuation or less ordering, set them the max
 					$max = $words[$v];
 				}
 			}
 		}
-		//tries to get all permutations. But it's not correct
 		$line[0] = str_split($line[0], 1);
 		$line[0][] = array_shift($line[0]);
 		$line[0] = implode($line[0]);

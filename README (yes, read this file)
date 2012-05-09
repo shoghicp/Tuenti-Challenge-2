@@ -1,0 +1,19 @@
+Email: shoghicp@gmail.com
+
+Here are my solutions for challenges 1-19.
+
+Every challenge has two .php files: the original that I sent to you
+when I submitted the challenge (it has the "_old" suffix), and a
+commented version of that code (because I wasn't used to do
+that, but some people asked me to comment my solutions).
+
+I run these scripts using 32bit PHP-CLI (of course) 5.3.8 under Windows 7 (battery lasts more here),
+and the extension BCMath to calculate big numbers.
+
+Some challenges have aditional files explaining their environment.
+
+
+I haven't got too much theoric knowledge about programming, but the things I
+know were learnt from experience (3 years). So don't expect professional code ;)
+
+

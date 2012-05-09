@@ -1,1 +1,0 @@
-Input is the number of straight cuts made through a round chocolate cake and output is the maximum number of cake pieces that can be produced.

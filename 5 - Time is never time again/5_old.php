@@ -1,9 +1,21 @@
 <?php
+/*
+---0---
+|     |
+1     2
+|     |
+---3---
+|     |
+4     5
+|     |
+---6---
+*/
 
 
-// lights on for a given number
+
+
 $leds = array(
-	"-" => array(0,0,0,0,0,0,0), // starting position
+	"-" => array(0,0,0,0,0,0,0),
 	"0" => array(1,1,1,0,1,1,1),
 	"1" => array(0,0,1,0,0,1,0),
 	"2" => array(1,0,1,1,1,0,1),
@@ -16,14 +28,11 @@ $leds = array(
 	"9" => array(1,1,1,1,0,1,1),
 );
 
-
-//sum on leds for a given number
 function getLeds($num){
 	global $leds;
 	return array_sum($leds[$num]);
 }
 
-//get leds difference
 function getLedsDiff($num1, $num2){
 	global $leds;
 	$ledC = 0;
@@ -35,14 +44,11 @@ function getLedsDiff($num1, $num2){
 	return $ledC;
 }
 
-
-//we calculate changes in a day
 $secondsDay = 60 * 60 * 24;
 $onPerDayIn = calculateLeds(0, $secondsDay);
 $onPerDayEf = calculateLeds(0, $secondsDay, true);
 
 
-//function to calculate led powering from a start time to ending
 function calculateLeds($start, $end, $efficient = false){
 	$on = 0;
 
@@ -72,7 +78,6 @@ function calculateLeds($start, $end, $efficient = false){
 	return $on;
 }
 
-//get seconds from time
 function getSecs($str){
 	$str = explode(":", $str);
 	$secs = 0;
@@ -85,7 +90,7 @@ function getSecs($str){
 while(!feof(STDIN)){
 	$line = str_replace(array("\r", "\n") , "", fgets(STDIN));
 	$time = explode(" - ", $line);
-	if(!isset($time[1])){ //blank lines doesn't stop me ;) (learnt form last challenge)
+	if(!isset($time[1])){
 		continue;
 	}
 
@@ -99,10 +104,10 @@ while(!feof(STDIN)){
 	$sec = $endSec - $startSec;
 	//$endSec = getSecs($end[1]);
 	
-	$days = ($endDays - $startDays) / $secondsDay; //calculate days 
-	$onIn = bcmul($onPerDayIn, "$days"); //sum changes per day
-	$onIn = bcadd($onIn, calculateLeds(0, $sec)); //and add the restant changes
-	$onEf = bcmul($onPerDayEf, "$days"); //same here
+	$days = ($endDays - $startDays) / $secondsDay;
+	$onIn = bcmul($onPerDayIn, "$days");
+	$onIn = bcadd($onIn, calculateLeds(0, $sec));
+	$onEf = bcmul($onPerDayEf, "$days");
 	$onEf = bcadd($onEf, calculateLeds(0, $sec, true));
-	echo bcsub($onIn, $onEf),PHP_EOL; //difference
+	echo bcsub($onIn, $onEf),PHP_EOL;
 }

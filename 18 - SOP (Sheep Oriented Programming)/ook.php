@@ -22,7 +22,7 @@
 		if(!isset($memory[$Mp])){
 			$memory[$Mp] = 0;
 		}
-		//echo "Mp: 0x".str_pad(dechex($Mp), 8, "0", STR_PAD_LEFT)." (".$memory[$Mp].") - Pp: 0x".str_pad(dechex($Pp), 8, "0", STR_PAD_LEFT). " (".$op.")",PHP_EOL;
+		//echo "Mp: 0x".str_pad(dechex($Mp), 8, "0", STR_PAD_LEFT)." (".dechex($memory[$Mp]).") - Pp: 0x".str_pad(dechex($Pp), 8, "0", STR_PAD_LEFT). " (".$op.")",PHP_EOL;
 
 		switch($op){
 			case ".?":

@@ -1,6 +1,6 @@
 <?php
 
-//math functions
+
 function gcf($a, $b) { 
 	return $b == "0" ? $a: gcf($b, bcmod($a, $b) ); 
 }
@@ -9,7 +9,7 @@ function lcm($a, $b) {
 }
 function lcm_nums($ar) {
 	if (count($ar) > 1) {
-		$ar[] = lcm( array_shift($ar) , array_shift($ar));
+		$ar[] = lcm( array_shift($ar) , array_shift($ar) );
 		return lcm_nums( $ar );
 	} else {
 		return $ar[0];
@@ -25,7 +25,7 @@ while(!feof(STDIN)){
 array_shift($lines);
 
 
-ini_set("memory_limit", "2048M"); //just in case... (uses 15M xD)
+ini_set("memory_limit", "2048M");
 
 
 foreach($lines as $n => $line){
@@ -47,38 +47,28 @@ foreach($lines as $n => $line){
 		}
 		$st2 = $stack;
 		$stack = array();
-		$cnt = min(count($st1), count($st2));
-		
-		//gets intercaled cards
+		$cnt = min(count($st1), count($st2));	
 		for($i = 0; $i < $cnt; ++$i){
 			$ct = count($st1) - 1;
 			$ct2 = count($st2) - 1;		
 			$stack[] = array_pop($st1);
 			$stack[] = array_pop($st2);		
 		}
-		
-		//gets remanent cards
 		$cnt = count($st1);
 		if($cnt > 0){
 			for($i = 0; $i < $cnt; ++$i){
 				$stack[] = array_pop($st1);
 			}
 		}
-		
-		//gets remanent cards
 		$cnt = count($st2);
 		if($cnt > 0){
 			for($i = 0; $i < $cnt; ++$i){
 				$stack[] = array_pop($st2);
 			}
 		}
-		
-		//obtain one-round change
 		for($i = 1; $i <= $N; ++$i){
 			$changes[$i - 1] = array_search($i, $stack);
 		}
-		
-		//Obtain position repeating
 		$repeat = array();
 		for($i = 1; $i <= $N; ++$i){
 			$firstPos = $i - 1;
@@ -94,6 +84,5 @@ foreach($lines as $n => $line){
 			$repeat[$i - 1] = $t;
 		}
 		
-	//Calculate least common multiple of repeatings
 	echo "Case #",$n + 1,": ",lcm_nums($repeat),PHP_EOL;
 }

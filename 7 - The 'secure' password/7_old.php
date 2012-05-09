@@ -1,14 +1,11 @@
 <?php
 
-//I did not know about tree structures, so I wrote it by "my way". The way I think. That fails for some cases :(
-
-
 $chars = array();
 while(!feof(STDIN)){
 	$chars[] = str_replace(array("\r", "\n") , "", fgets(STDIN));
 }
 
-//----- STOLEN FROM STACKOVERFLOW ----- xD
+//----- STOLEN FROM STACKOVERFLOW -----
 // function to generate and print all N! permutations of $str. (N = strlen($str)).
 function string_getpermutations($prefix, $characters, &$permutations)
 {
@@ -27,9 +24,12 @@ function string_getpermutations($prefix, $characters, &$permutations)
 }
 //----- END -----
 
+function str_push($str, $str2, $pos){
+	$len = strlen($str);
+	$pos = intval($pos);
+	return substr($str,0, -$len + $pos).$str2.substr($str,$pos);
+}
 
-
-//simple way ;)
 function factorial($num){
 	$num = intval($num);
 	$ret = 1;
@@ -46,8 +46,6 @@ $after = array();
 foreach($chars as $c){
 	$len = strlen($c);
 	$chr = array();
-	
-	//here we get chars that are AFTER the char. I named it "before" because the char is before these characters ;)
 	for($i = 0; $i < $len; ++$i){
 		foreach($chr as $v){
 			if(!isset($before[$c{$i}])){
@@ -59,8 +57,6 @@ foreach($chars as $c){
 		}
 		$chr[] = $c{$i};
 	}
-	
-	//get chars BEFORE char
 	for($i = 0; $i < $len; ++$i){
 		for($y = $i + 1; $y < $len; ++$y){
 			if(!isset($after[$c{$i}])){
@@ -73,8 +69,6 @@ foreach($chars as $c){
 	}
 }
 
-
-//add chars form other characters than are after
 foreach($before as $char => $b){
 	foreach($b as $c){
 		if(isset($before[$c])){
@@ -89,7 +83,6 @@ foreach($before as $char => $b){
 	}
 }
 
-//add chars form other characters than are before
 foreach($after as $char => $b){
 	foreach($b as $c){
 		if(isset($after[$c])){
@@ -110,8 +103,6 @@ $ordered = array();
 $selected = "";
 $count = count($before);
 
-
-//order them
 foreach($before as $char => $b){
 	$countB = count($b);
 	$countA = $count - count($after[$char]) - 1;
@@ -129,7 +120,7 @@ foreach($before as $char => $b){
 	}
 }
 
-//create first set of keys
+
 $keys = array(0 => "");
 $start = $count;
 for($i = 0; $i < $count; ++$i){
@@ -145,7 +136,6 @@ for($i = 0; $i < $count; ++$i){
 	$keys[0] .= $ordered[$i][0];
 }
 
-//mix them to get rare passwords
 $used = array();
 foreach($ordered as $i => $n){
 	$c = count($n);
@@ -158,9 +148,6 @@ foreach($ordered as $i => $n){
 	}
 }
 
-
-//permute chars and replace them
-//this is done in a weird ay, supposing that all left chars are in a row
 $tot = factorial(count($used));
 $used = str_split(implode($used),1);
 $permutations = array();

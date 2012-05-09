@@ -1,0 +1,6 @@
+I made an interpreter of Ook!, Bee and BrainFuck in PHP. 
+You can try it, I got info with this program.
+
+Also added an brainfuck program xd (made in class)
+
+php ook.php <filename>
